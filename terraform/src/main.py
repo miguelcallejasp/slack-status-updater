@@ -14,7 +14,7 @@ def update_slack_status(slack_user: str,
     
     now = datetime.datetime.nowutc()
     print("Status update for user {} and message: {}".format(slack_user, slack_status_text))
-    print("Expiration of the message will be at: {}".format(end_time)
+    print("Expiration of the message will be at: {}".format(end_time))
     
     built_headers = {
         "Content-type": "application/json",
