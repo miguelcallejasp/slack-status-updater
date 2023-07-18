@@ -1,32 +1,47 @@
 import functions_framework
-import datetime
+from datetime import datetime, timedelta
 import requests
 import base64
 import json
 
 
+def epoch_time_in_amount_seconds(slack_status_duration_seconds: int):
+    
+    current_time = datetime.utcnow()
+    future_time = current_time + timedelta(seconds=15)
+    epoch_time = int(future_time.timestamp())
+    print("The date when the status is going to be cleaned is (UTC): {}".format(future_time.strftime("%m/%d/%Y, %H:%M:%S")))
+    return epoch_time
 
 def update_slack_status(slack_user: str,
                         slack_apikey: str,
                         slack_status_text: str,
-                        slack_status_emojix: str,
+                        slack_status_emoji: str,
                         slack_status_duration_seconds: str):
     
-    now = datetime.datetime.nowutc()
+    expiration = epoch_time_in_amount_seconds(slack_status_duration_seconds)
     print("Status update for user {} and message: {}".format(slack_user, slack_status_text))
-    print("Expiration of the message will be at: {}".format(end_time))
     
     built_headers = {
-        "Content-type": "application/json",
-        "apikey": str(apikey),
-        "tenant": str(tenant),
-        "Keep-Alive": "timeout=540, max=10",
-        "user-agent": "CloudFunctionsAnalytics/1.0.0"
+        "Content-type": "application/json; charset=utf-8",
+        "Authorization": "Bearer {}".format(slack_apikey),
     }
     
+    slack_url = "https://slack.com"
+    slack_api_user_url = "/api/users.profile.set?user={}".format(slack_user)
+    slack_api_payload = {
+                            "profile": {
+                                "status_text": "{}".format(slack_status_text),
+                                "status_emoji": ":{}:".format(slack_status_emoji),
+                                "status_expiration": int(expiration)
+                            }
+                        }
     try:
-        r = requests.get(url+"/analytics/legacy/activitymonitor?timezone_string=America%2FNew_York&persist=True&daysBefore=1&reportHierarchyGroupCode="+tenant, headers=built_headers, timeout=540)
-        #print(r)
+        r = requests.post(slack_url+slack_api_user_url, 
+                          headers=built_headers,
+                          data=json.dumps(slack_api_payload),
+                          timeout=540)
+        print(r.content)
         print(r.status_code)
     except Exception as error:
         print(error)
