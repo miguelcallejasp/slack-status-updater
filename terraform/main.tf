@@ -69,7 +69,7 @@ resource "google_cloudfunctions_function" "slack-status-function" {
 
 resource "google_cloud_scheduler_job" "slack-status-update-trigger-job" {
   name        = "slack-status-update-trigger-job"
-  schedule    = "0 7 * * *"
+  schedule    = "0 23 * * 1-4"
 
   pubsub_target {
      topic_name = "${google_pubsub_topic.slack-status-update-trigger-topic.id}"
