@@ -45,7 +45,7 @@ def update_slack_status(slack_user: str,
                           data=json.dumps(slack_api_payload),
                           timeout=540)
         print(json.loads(r.content))
-        print(r.status_code)
+        print("Response from Slack: {}".format(r.status_code))
     except Exception as error:
         print(error)
 
