@@ -27,4 +27,7 @@ Create the following Secrets in Google Secret Manager
 Where the `slack_status_emoji` is the short version of the emoji in the format `:notebook:` without the semicolons. And the `slack_status_duration_seconds` is how long
 the status will be available in seconds. 
 
-- `slack_status_update_apikey` with the value of the Slack API Key.
+- `slack_status_update_apikey` with the value of the Slack API Key. I think I'm not using this anymore, although I would need to review it. 
+
+### Destroy
+Just hit `terraform destroy` and everything will be gone. 
