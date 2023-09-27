@@ -10,6 +10,9 @@ data "google_secret_manager_secret_version" "slack_status_update_body" {
   version = "1"
 }
 
+# The local slack_apikey might not be used at all.
+# I created it because I wanted to selectively add the apikey in the process.
+# But the secret is being included in the slack_status_update_body entirely.
 locals {
   slack_apikey = data.google_secret_manager_secret_version.slack_status_update_apikey.secret_data
   root_dir = abspath("${path.module}/src")
@@ -24,6 +27,7 @@ data "archive_file" "source" {
 resource "google_storage_bucket" "slack-status-function-bucket" {
   name          = "slack-status-function-bucket"
   location      = var.gcp_region_us_central1
+  force_destroy = true  
   uniform_bucket_level_access = true
   storage_class = "STANDARD"
   versioning {
